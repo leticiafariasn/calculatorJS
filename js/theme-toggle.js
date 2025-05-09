@@ -12,10 +12,10 @@ class ThemeSwitcher {
             this.currentTheme === dark || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)    
         ){
             document.documentElement.setAttribute('data-theme', 'dark')
-            this.currentTheme === 'dark'
+            this.currentTheme = 'dark'
         } else {
             document.documentElement.removeAttribute('data-theme')
-            this.currentTheme === 'light'
+            this.currentTheme = 'light'
         }
 
         localStorage.setItem('theme', this.currentTheme)
@@ -39,7 +39,7 @@ class ThemeSwitcher {
             this.currentTheme = 'dark'
         } else {
             document.documentElement.removeAttribute('data-theme')
-            this.currentTheme === 'light'
+            this.currentTheme = 'light'
         }
         localStorage.setItem('theme', this.currentTheme)
     }
