@@ -20,5 +20,17 @@ class ThemeSwitcher {
 
         localStorage.setItem('theme', this.currentTheme)
     }
+    initEventListners(){
+        this.themeToggle.addEventListener('click', () => {
+            this.themeToggle()
+        })
+
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+            if (!localStorage.getItem('theme')) {
+                this.currentTheme = e.matches ? 'dark' : 'light'
+                this.initTheme()
+            }
+        })
+    }
 }
     
