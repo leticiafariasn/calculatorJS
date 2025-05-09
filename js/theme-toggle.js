@@ -22,7 +22,7 @@ class ThemeSwitcher {
     }
     initEventListners(){
         this.themeToggle.addEventListener('click', () => {
-            this.themeToggle()
+            this.toggleTheme()
         })
 
         window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
@@ -31,6 +31,16 @@ class ThemeSwitcher {
                 this.initTheme()
             }
         })
+    }
+
+    toggleTheme() {
+        if (this.currentTheme === 'light') {
+            document.documentElement.setAttribute('data-theme','dark')
+            this.currentTheme = 'dark'
+        } else {
+            document.documentElement.removeAttribute('data-theme')
+            this.currentTheme === 'light'
+        }
     }
 }
     
