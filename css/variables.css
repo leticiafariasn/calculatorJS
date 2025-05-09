@@ -1,0 +1,39 @@
+:root {
+  /* Tema claro (padrão) */
+  --bg-color: #f5f5f5;
+  --calculator-bg: #ffffff;
+  --display-bg: #f0f0f0;
+  --btn-bg: #ffffff;
+  --btn-color: #333333;
+  --btn-operation-bg: #f0f0f0;
+  --btn-operation-color: #ff8c00;
+  --btn-equal-bg: #ff8c00;
+  --btn-equal-color: #ffffff;
+  --btn-clear-bg: #ff6347;
+  --btn-clear-color: #ffffff;
+  --display-text: #333333;
+  --history-text: #777777;
+  --header-color: #333333;
+  --shadow-color: rgba(0, 0, 0, 0.1);
+  --border-color: #e0e0e0;
+}
+
+/* Variáveis para o tema escuro (serão aplicadas via JS) */
+[data-theme="dark"] {
+  --bg-color: #121212;
+  --calculator-bg: #1e1e1e;
+  --display-bg: #2d2d2d;
+  --btn-bg: #2d2d2d;
+  --btn-color: #ffffff;
+  --btn-operation-bg: #333333;
+  --btn-operation-color: #ff9f1c;
+  --btn-equal-bg: #ff9f1c;
+  --btn-equal-color: #ffffff;
+  --btn-clear-bg: #e63946;
+  --btn-clear-color: #ffffff;
+  --display-text: #ffffff;
+  --history-text: #aaaaaa;
+  --header-color: #ffffff;
+  --shadow-color: rgba(0, 0, 0, 0.3);
+  --border-color: #333333;
+}
