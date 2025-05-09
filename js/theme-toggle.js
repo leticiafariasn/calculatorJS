@@ -41,6 +41,10 @@ class ThemeSwitcher {
             document.documentElement.removeAttribute('data-theme')
             this.currentTheme === 'light'
         }
+        localStorage.setItem('theme', this.currentTheme)
     }
 }
     
+document.addEventListener('DOMContentLoaded', () => {
+    const themeSwitcher = new ThemeSwitcher()
+})
