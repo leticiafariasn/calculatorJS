@@ -21,8 +21,8 @@ class ThemeSwitcher {
         localStorage.setItem('theme', this.currentTheme)
     }
     initEventListners(){
-        this.themeToggleBtn.addEventListener('click', () => {
-            this.themeToggle()
+        this.themeToggle.addEventListener('click', () => {
+            this.toggleTheme()
         })
 
         window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
@@ -33,7 +33,7 @@ class ThemeSwitcher {
         })
     }
 
-    themeToggle() {
+    toggleTheme() {
         if (this.currentTheme === 'light') {
             document.documentElement.setAttribute('data-theme','dark')
             this.currentTheme = 'dark'
