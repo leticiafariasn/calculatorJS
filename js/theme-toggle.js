@@ -1,6 +1,6 @@
 class ThemeSwitcher {
     constructor() {
-        this.themeToggle = document.getElementById('theme-toggle')
+        this.themeToggleBtn = document.getElementById('theme-toggle')
         this.currentTheme = localStorage.getItem('theme') || 'light'
 
         this.initTheme()
@@ -21,8 +21,8 @@ class ThemeSwitcher {
         localStorage.setItem('theme', this.currentTheme)
     }
     initEventListners(){
-        this.themeToggle.addEventListener('click', () => {
-            this.toggleTheme()
+        this.themeToggleBtn.addEventListener('click', () => {
+            this.themeToggle()
         })
 
         window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
@@ -33,7 +33,7 @@ class ThemeSwitcher {
         })
     }
 
-    toggleTheme() {
+    themeToggle() {
         if (this.currentTheme === 'light') {
             document.documentElement.setAttribute('data-theme','dark')
             this.currentTheme = 'dark'
