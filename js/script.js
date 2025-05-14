@@ -1,186 +1,207 @@
-class Calculator {
-  constructor(previousOperandElement, currentOperandElement) {
-    this.previousOperandElement = previousOperandElement
-    this.currentOperandElement = currentOperandElement
-    this.clear()
-  }
+// Selecionando elementos do DOM
+const previousOperandElement = document.getElementById("previous-operand")
+const currentOperandElement = document.getElementById("current-operand")
+const numberButtons = document.querySelectorAll(".number")
+const operatorButtons = document.querySelectorAll(".operator")
+const equalsButton = document.getElementById("equals")
+const clearButton = document.getElementById("clear")
+const deleteButton = document.getElementById("delete")
+const decimalButton = document.getElementById("decimal")
 
-  clear() {
-    this.currentOperand = "0"
-    this.previousOperand = ""
-    this.operation = undefined
-  }
+// Variáveis para armazenar os valores e operações
+let currentOperand = "0"
+let previousOperand = ""
+let operation = undefined
+let shouldResetScreen = false
 
-  delete() {
-    if (this.currentOperand === "0") return
-    this.currentOperand = this.currentOperand.toString().slice(0, -1)
-    if (this.currentOperand === "") {
-      this.currentOperand = "0"
-    }
-  }
+// Funções principais da calculadora
+function clear() {
+  currentOperand = "0"
+  previousOperand = ""
+  operation = undefined
+}
 
-  appendNumber(number) {
-    if (number === "." && this.currentOperand.includes(".")) return
-    if (this.currentOperand === "0" && number !== ".") {
-      this.currentOperand = number
-    } else {
-      this.currentOperand = this.currentOperand.toString() + number
-    }
-  }
-
-  chooseOperation(operation) {
-    if (this.currentOperand === "0" && operation === "-") {
-      this.currentOperand = "-"
-      return
-    }
-
-    if (this.currentOperand === "") return
-
-    if (this.previousOperand !== "") {
-      this.compute()
-    }
-
-    this.operation = operation
-    this.previousOperand = this.currentOperand
-    this.currentOperand = "0"
-  }
-
-  compute() {
-    let computation
-    const prev = Number.parseFloat(this.previousOperand)
-    const current = Number.parseFloat(this.currentOperand)
-
-    if (isNaN(prev) || isNaN(current)) return
-
-    switch (this.operation) {
-      case "+":
-        computation = prev + current
-        break
-      case "-":
-        computation = prev - current
-        break
-      case "*":
-        computation = prev * current
-        break
-      case "/":
-        if (current === 0) {
-          this.currentOperand = "Erro"
-          this.previousOperand = ""
-          this.operation = undefined
-          return
-        }
-        computation = prev / current
-        break
-      case "%":
-        computation = (prev * current) / 100
-        break
-      default:
-        return
-    }
-
-    this.currentOperand = computation.toString()
-    this.operation = undefined
-    this.previousOperand = ""
-  }
-
-  getDisplayNumber(number) {
-    if (number === "Erro") return "Erro"
-
-    const stringNumber = number.toString()
-    const integerDigits = Number.parseFloat(stringNumber.split(".")[0])
-    const decimalDigits = stringNumber.split(".")[1]
-
-    let integerDisplay
-
-    if (isNaN(integerDigits)) {
-      integerDisplay = ""
-    } else {
-      integerDisplay = integerDigits.toLocaleString("pt-BR", {
-        maximumFractionDigits: 0,
-      })
-    }
-
-    if (decimalDigits != null) {
-      return `${integerDisplay},${decimalDigits}`
-    } else {
-      return integerDisplay
-    }
-  }
-
-  updateDisplay() {
-    this.currentOperandElement.innerText = this.getDisplayNumber(this.currentOperand)
-
-    if (this.operation != null) {
-      this.previousOperandElement.innerText = `${this.getDisplayNumber(this.previousOperand)} ${this.operation}`
-    } else {
-      this.previousOperandElement.innerText = ""
-    }
+function deleteNumber() {
+  if (currentOperand === "0") return
+  if (currentOperand.length === 1 || (currentOperand.length === 2 && currentOperand.startsWith("-"))) {
+    currentOperand = "0"
+  } else {
+    currentOperand = currentOperand.slice(0, -1)
   }
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  const previousOperandElement = document.getElementById("previous-operand")
-  const currentOperandElement = document.getElementById("current-operand")
-  const calculator = new Calculator(previousOperandElement, currentOperandElement)
+function appendNumber(number) {
+  if (shouldResetScreen) {
+    currentOperand = ""
+    shouldResetScreen = false
+  }
 
-  // Event listeners for number buttons
-  document.querySelectorAll("[data-number]").forEach((button) => {
-    button.addEventListener("click", () => {
-      calculator.appendNumber(button.getAttribute("data-number"))
-      calculator.updateDisplay()
-    })
-  })
+  if (number === "." && currentOperand.includes(".")) return
 
-  // Event listeners for operation buttons
-  document.querySelectorAll("[data-action]").forEach((button) => {
-    button.addEventListener("click", () => {
-      const action = button.getAttribute("data-action")
+  if (currentOperand === "0" && number !== ".") {
+    currentOperand = number
+  } else {
+    currentOperand += number
+  }
+}
 
-      switch (action) {
-        case "clear":
-          calculator.clear()
-          break
-        case "delete":
-          calculator.delete()
-          break
-        case "=":
-          calculator.compute()
-          break
-        case "+":
-        case "-":
-        case "*":
-        case "/":
-        case "%":
-          calculator.chooseOperation(action)
-          break
-        default:
-          return
+function chooseOperation(op) {
+  if (currentOperand === "0" && op === "-") {
+    currentOperand = "-"
+    return
+  }
+
+  if (currentOperand === "") return
+
+  if (previousOperand !== "") {
+    compute()
+  }
+
+  operation = op
+  previousOperand = currentOperand
+  shouldResetScreen = true
+}
+
+function compute() {
+  let computation
+  const prev = Number.parseFloat(previousOperand)
+  const current = Number.parseFloat(currentOperand)
+
+  if (isNaN(prev) || isNaN(current)) return
+
+  switch (operation) {
+    case "+":
+      computation = prev + current
+      break
+    case "-":
+      computation = prev - current
+      break
+    case "×":
+      computation = prev * current
+      break
+    case "/":
+      if (current === 0) {
+        alert("Erro: Divisão por zero!")
+        clear()
+        updateDisplay()
+        return
       }
+      computation = prev / current
+      break
+    case "%":
+      computation = (prev * current) / 100
+      break
+    default:
+      return
+  }
 
-      calculator.updateDisplay()
-    })
+  currentOperand = computation.toString()
+  operation = undefined
+  previousOperand = ""
+  shouldResetScreen = true
+}
+
+function getDisplayNumber(number) {
+  const stringNumber = number.toString()
+  const integerDigits = Number.parseFloat(stringNumber.split(".")[0])
+  const decimalDigits = stringNumber.split(".")[1]
+
+  let integerDisplay
+
+  if (isNaN(integerDigits)) {
+    integerDisplay = ""
+  } else {
+    integerDisplay = integerDigits.toLocaleString("pt-BR", { maximumFractionDigits: 0 })
+  }
+
+  if (decimalDigits != null) {
+    return `${integerDisplay},${decimalDigits}`
+  } else {
+    return integerDisplay
+  }
+}
+
+function updateDisplay() {
+  currentOperandElement.textContent = getDisplayNumber(currentOperand)
+
+  if (operation != null) {
+    previousOperandElement.textContent = `${getDisplayNumber(previousOperand)} ${operation}`
+  } else {
+    previousOperandElement.textContent = ""
+  }
+}
+
+// Event Listeners
+numberButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    appendNumber(button.textContent)
+    updateDisplay()
   })
-
-  // Keyboard support
-  document.addEventListener("keydown", (event) => {
-    if (/[0-9]/.test(event.key)) {
-      calculator.appendNumber(event.key)
-    } else if (event.key === ".") {
-      calculator.appendNumber(".")
-    } else if (event.key === "+" || event.key === "-" || event.key === "*" || event.key === "/" || event.key === "%") {
-      calculator.chooseOperation(event.key)
-    } else if (event.key === "Enter" || event.key === "=") {
-      event.preventDefault()
-      calculator.compute()
-    } else if (event.key === "Backspace") {
-      calculator.delete()
-    } else if (event.key === "Escape") {
-      calculator.clear()
-    }
-
-    calculator.updateDisplay()
-  })
-
-  // Initialize display
-  calculator.updateDisplay()
 })
+
+operatorButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    if (button.id === "clear") {
+      clear()
+    } else if (button.id === "delete") {
+      deleteNumber()
+    } else if (button.id === "percentage") {
+      chooseOperation("%")
+    } else if (button.id === "divide") {
+      chooseOperation("/")
+    } else if (button.id === "multiply") {
+      chooseOperation("×")
+    } else if (button.id === "subtract") {
+      chooseOperation("-")
+    } else if (button.id === "add") {
+      chooseOperation("+")
+    }
+    updateDisplay()
+  })
+})
+
+equalsButton.addEventListener("click", () => {
+  compute()
+  updateDisplay()
+})
+
+// Suporte para teclado
+document.addEventListener("keydown", (event) => {
+  if (/[0-9]/.test(event.key)) {
+    appendNumber(event.key)
+    updateDisplay()
+  } else if (event.key === ".") {
+    appendNumber(".")
+    updateDisplay()
+  } else if (event.key === "+") {
+    chooseOperation("+")
+    updateDisplay()
+  } else if (event.key === "-") {
+    chooseOperation("-")
+    updateDisplay()
+  } else if (event.key === "*") {
+    chooseOperation("×")
+    updateDisplay()
+  } else if (event.key === "/") {
+    event.preventDefault() // Previne o quick find no Firefox
+    chooseOperation("/")
+    updateDisplay()
+  } else if (event.key === "%") {
+    chooseOperation("%")
+    updateDisplay()
+  } else if (event.key === "Enter" || event.key === "=") {
+    event.preventDefault()
+    compute()
+    updateDisplay()
+  } else if (event.key === "Backspace") {
+    deleteNumber()
+    updateDisplay()
+  } else if (event.key === "Escape") {
+    clear()
+    updateDisplay()
+  }
+})
+
+// Inicialização
+clear()
+updateDisplay()
