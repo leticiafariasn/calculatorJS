@@ -1,62 +1,54 @@
 /**
- * Alternador de tema claro/escuro
+ * Funções utilitárias para a calculadora
  */
 
-class ThemeSwitcher {
-  constructor() {
-    this.themeToggle = document.getElementById("theme-toggle")
-    this.currentTheme = localStorage.getItem("theme") || "light"
-
-    this.initTheme()
-    this.initEventListeners()
+// Formata um número para exibição
+function formatNumber(number) {
+  // Converte para string e verifica se é um número válido
+  const numStr = number.toString()
+  if (numStr === "Infinity" || numStr === "-Infinity") {
+    return "Erro"
+  }
+  if (numStr === "NaN") {
+    return "Erro"
   }
 
-  // Inicializa o tema com base na preferência salva
-  initTheme() {
-    if (
-      this.currentTheme === "dark" ||
-      (!localStorage.getItem("theme") && window.matchMedia("(prefers-color-scheme: dark)").matches)
-    ) {
-      document.documentElement.setAttribute("data-theme", "dark")
-      this.currentTheme = "dark"
-    } else {
-      document.documentElement.removeAttribute("data-theme")
-      this.currentTheme = "light"
-    }
+  // Formata o número para exibição
+  const maxDigits = 12
 
-    localStorage.setItem("theme", this.currentTheme)
+  // Se o número for muito grande, use notação científica
+  if (Math.abs(number) >= 1e12) {
+    return number.toExponential(6)
   }
 
-  // Inicializa os event listeners
-  initEventListeners() {
-    this.themeToggle.addEventListener("click", () => {
-      this.toggleTheme()
-    })
-
-    // Detecta mudanças na preferência do sistema
-    window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (e) => {
-      if (!localStorage.getItem("theme")) {
-        this.currentTheme = e.matches ? "dark" : "light"
-        this.initTheme()
-      }
-    })
+  // Verifica se o número tem parte decimal
+  if (Number.isInteger(number)) {
+    return number.toString()
   }
 
-  // Alterna entre os temas claro e escuro
-  toggleTheme() {
-    if (this.currentTheme === "light") {
-      document.documentElement.setAttribute("data-theme", "dark")
-      this.currentTheme = "dark"
-    } else {
-      document.documentElement.removeAttribute("data-theme")
-      this.currentTheme = "light"
-    }
-
-    localStorage.setItem("theme", this.currentTheme)
+  // Limita o número de casas decimais para caber no display
+  const parts = numStr.split(".")
+  if (parts[0].length >= maxDigits) {
+    return number.toExponential(6)
   }
+
+  // Limita o número de casas decimais
+  const decimalPlaces = Math.min(maxDigits - parts[0].length - 1, 10)
+  return number.toFixed(decimalPlaces).replace(/\.?0+$/, "")
 }
 
-// Inicializa o alternador de tema quando o DOM estiver carregado
-document.addEventListener("DOMContentLoaded", () => {
-  const themeSwitcher = new ThemeSwitcher()
-})
+// Verifica se uma string é um operador
+function isOperator(char) {
+  return ["+", "-", "*", "/"].includes(char)
+}
+
+// Obtém o símbolo de exibição para um operador
+function getOperatorSymbol(operator) {
+  const symbols = {
+    "+": "+",
+    "-": "−",
+    "*": "×",
+    "/": "÷",
+  }
+  return symbols[operator] || operator
+}

@@ -1,4 +1,3 @@
-/* Reset e estilos base */
 * {
     margin: 0;
     padding: 0;
@@ -22,7 +21,7 @@
     padding: var(--spacing-4);
   }
   
-  /* Estilos da calculadora */
+
   .calculator {
     background-color: var(--card);
     border-radius: var(--border-radius-lg);

@@ -3,8 +3,8 @@
  */
 
 import { Display } from "./display.js"
-import { getOperatorSymbol } from "./utils.js"
-import { formatNumber } from "./utils.js"
+import { getOperatorSymbol } from "./util.js"
+import { formatNumber } from "./util.js"
 
 class Calculator {
   constructor() {
